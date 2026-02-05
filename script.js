@@ -12,9 +12,17 @@ function updateTime() {
     let lessonDisplay = document.getElementById('lesson-display');
     let schoolTime = detectSchoolTime();
 
-    lessonDisplay.innerHTML = `${schoolTime.getHours()}:${schoolTime.getMinutes()}`;
+        
+    console.log(schoolTime);
+    if (typeof schoolTime === "string") {
+        lessonDisplay.innerHTML = schoolTime;
+        return;
+    } else {
+        lessonDisplay.innerHTML = `${schoolTime}`;
+    }
 
 }
+
 
 setInterval(updateTime, 100);
 updateTime();
@@ -66,30 +74,41 @@ function detectSchoolTime() {
         [17, 20],
     ]
 
-    let date = new Date()
 
     let ret;
 
-    for (let i = 0; i < starts.length; i++) {
-        if (date.getHours() > 18) {
-            ret = "Wait till tomorrow 🎀"
-        } else {
+    let date = new Date();
 
+    const pad = n => String(n).padStart(2, '0');
 
-            if (
-                (date.getHours() == starts[i][0] && date.getMinutes() >= starts[i][1] ||
-                    date.getHours() == starts[i][0] + 1) && date.getMinutes() <= starts[i][1]
-            ) {
+    if (date.getHours() > 18) {
+        ret = "Wait till tomorrow 🎀";
+    } else {
+        let found = false;
 
-                ret = new Date(date.getFullYear(), date.getMonth(), date.getDay(), pause[i * 2][0], pause[i * 2][1], date.getSeconds(), date.getMilliseconds());
-                let temp = new Date()
+        for (let j = 0; j < pause.length; j += 2) {
+            let start = new Date(date.getFullYear(), date.getMonth(), date.getDate(), pause[j][0], pause[j][1], 0, 0);
+            let end = new Date(date.getFullYear(), date.getMonth(), date.getDate(), pause[j+1][0], pause[j+1][1], 0, 0);
 
+            if (date >= start && date < end) {
+                document.getElementById("pause").innerText = "Nächste Stunde";
+                ret = `${pad(end.getHours())}:${pad(end.getMinutes())}:00`;
+                found = true;
+                break;
+            }
+
+            if (date < start) {
+                document.getElementById("pause").innerText = "Nächste Pause";
+                ret = `${pad(start.getHours())}:${pad(start.getMinutes())}:00`;
+                found = true;
+                break;
             }
         }
 
+        if (!found) {
+            ret = "School is over for today";
+        }
     }
 
-
     return ret;
-
 }
