@@ -12,14 +12,10 @@ function updateTime() {
     let lessonDisplay = document.getElementById('lesson-display');
     let schoolTime = detectSchoolTime();
 
-        
+
     console.log(schoolTime);
-    if (typeof schoolTime === "string") {
-        lessonDisplay.innerHTML = schoolTime;
-        return;
-    } else {
-        lessonDisplay.innerHTML = `${schoolTime}`;
-    }
+    lessonDisplay.innerHTML = schoolTime;
+    return;
 
 }
 
@@ -88,7 +84,7 @@ function detectSchoolTime() {
 
         for (let j = 0; j < pause.length; j += 2) {
             let start = new Date(date.getFullYear(), date.getMonth(), date.getDate(), pause[j][0], pause[j][1], 0, 0);
-            let end = new Date(date.getFullYear(), date.getMonth(), date.getDate(), pause[j+1][0], pause[j+1][1], 0, 0);
+            let end = new Date(date.getFullYear(), date.getMonth(), date.getDate(), pause[j + 1][0], pause[j + 1][1], 0, 0);
 
             if (date >= start && date < end) {
                 document.getElementById("pause").innerText = "Nächste Stunde";
